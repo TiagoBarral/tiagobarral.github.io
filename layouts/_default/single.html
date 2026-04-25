@@ -1,0 +1,13 @@
+{{ define "main" }}
+  <article class="article">
+    <header class="article-header">
+      <h1>{{ .Title }}</h1>
+      {{ with .Date }}
+        <p class="post-meta">Posted on <time datetime="{{ .Format "2006-01-02" }}">{{ .Format "January 2, 2006" }}</time></p>
+      {{ end }}
+    </header>
+    <div class="content">
+      {{ .Content }}
+    </div>
+  </article>
+{{ end }}

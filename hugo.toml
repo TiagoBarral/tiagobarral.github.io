@@ -1,0 +1,37 @@
+baseURL = "https://tiagobarral.github.io/"
+languageCode = "en-us"
+title = "Tiago Barral"
+
+[params]
+  description = "A quiet portfolio and learning journal."
+  author = "Tiago Barral"
+  github = "https://github.com/TiagoBarral"
+
+[markup]
+  [markup.highlight]
+    noClasses = false
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = false
+
+[menus]
+  [[menus.main]]
+    name = "Home"
+    pageRef = "/"
+    weight = 10
+  [[menus.main]]
+    name = "Guides"
+    pageRef = "/guides"
+    weight = 15
+  [[menus.main]]
+    name = "About"
+    pageRef = "/about"
+    weight = 20
+  [[menus.main]]
+    name = "Projects"
+    pageRef = "/projects"
+    weight = 30
+  [[menus.main]]
+    name = "Blog"
+    pageRef = "/blog"
+    weight = 40

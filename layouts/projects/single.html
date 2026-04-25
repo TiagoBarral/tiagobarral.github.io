@@ -1,0 +1,26 @@
+{{ define "main" }}
+  <article class="article">
+    <header class="article-header">
+      <h1>{{ .Title }}</h1>
+      {{ with .Params.github }}
+        <p><a href="{{ . }}">View on GitHub</a></p>
+      {{ end }}
+    </header>
+
+    <div class="project-facts">
+      {{ with .Params.stack }}
+        <p><strong>Stack:</strong> {{ delimit . ", " }}</p>
+      {{ end }}
+      {{ with .Params.status }}
+        <p><strong>Status:</strong> {{ . }}</p>
+      {{ end }}
+      {{ with .Params.lesson }}
+        <p><strong>Main lesson:</strong> {{ . }}</p>
+      {{ end }}
+    </div>
+
+    <div class="content">
+      {{ .Content }}
+    </div>
+  </article>
+{{ end }}

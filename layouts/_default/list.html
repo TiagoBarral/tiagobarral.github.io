@@ -1,0 +1,17 @@
+{{ define "main" }}
+  <header class="page-header">
+    <p class="eyebrow">Index</p>
+    <h1>{{ .Title }}</h1>
+    {{ with .Content }}
+      <div class="page-description">{{ . }}</div>
+    {{ end }}
+  </header>
+
+  <div class="entry-list">
+    {{ range .Pages.ByDate.Reverse }}
+      {{ partial "summary.html" . }}
+    {{ else }}
+      <p>No entries yet.</p>
+    {{ end }}
+  </div>
+{{ end }}

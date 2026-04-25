@@ -1,0 +1,79 @@
+{{ define "main" }}
+  <section class="home-hero">
+    <div class="home-hero__content">
+      <p class="eyebrow">Portfolio / Learning Journal</p>
+      <h1>Building useful projects and documenting the messy middle.</h1>
+      <div class="home-copy">
+        {{ .Content }}
+      </div>
+      <div class="hero-actions">
+        <a class="button button-primary" href="{{ "/projects/" | relURL }}">View projects</a>
+        <a class="button button-secondary" href="{{ "/blog/" | relURL }}">Read notes</a>
+      </div>
+    </div>
+    <aside class="focus-panel" aria-label="Current focus">
+      <p class="focus-label">Current focus</p>
+      <h2>Learning in public</h2>
+      <p>Small projects, honest retrospectives, bug notes, and steady improvement.</p>
+      <dl>
+        <div>
+          <dt>Mode</dt>
+          <dd>Build → reflect → improve</dd>
+        </div>
+        <div>
+          <dt>Stack</dt>
+          <dd>Hugo, Markdown, GitHub Pages</dd>
+        </div>
+      </dl>
+    </aside>
+  </section>
+
+  {{ $guides := where site.RegularPages "Section" "guides" }}
+  {{ if $guides }}
+    <section class="panel">
+      <div class="section-heading">
+        <h2>Learning Guides</h2>
+        <a href="{{ "/guides/" | relURL }}">All guides</a>
+      </div>
+      <div class="card-grid">
+        {{ range first 2 $guides }}
+          <article class="guide-card">
+            {{ with .Params.part }}<p class="pill">Part {{ . }}</p>{{ end }}
+            <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+            {{ with .Params.summary }}<p>{{ . }}</p>{{ end }}
+          </article>
+        {{ end }}
+      </div>
+    </section>
+  {{ end }}
+
+  {{ $featured := where (where site.RegularPages "Section" "projects") ".Params.featured" true }}
+  {{ if $featured }}
+    <section class="panel">
+      <div class="section-heading">
+        <h2>Featured Projects</h2>
+        <a href="{{ "/projects/" | relURL }}">All projects</a>
+      </div>
+      <div class="entry-list">
+        {{ range first 3 $featured }}
+          {{ partial "summary.html" . }}
+        {{ end }}
+      </div>
+    </section>
+  {{ end }}
+
+  {{ $posts := where site.RegularPages "Section" "blog" }}
+  {{ if $posts }}
+    <section class="panel">
+      <div class="section-heading">
+        <h2>Recent Notes</h2>
+        <a href="{{ "/blog/" | relURL }}">All notes</a>
+      </div>
+      <div class="entry-list">
+        {{ range first 3 $posts }}
+          {{ partial "summary.html" . }}
+        {{ end }}
+      </div>
+    </section>
+  {{ end }}
+{{ end }}

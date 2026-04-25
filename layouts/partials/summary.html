@@ -1,0 +1,11 @@
+<article class="entry-summary">
+  <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+  {{ with .Date }}
+    <p class="post-meta">Posted on <time datetime="{{ .Format "2006-01-02" }}">{{ .Format "January 2, 2006" }}</time></p>
+  {{ end }}
+  {{ with .Params.summary }}
+    <p>{{ . }}</p>
+  {{ else with .Summary }}
+    <p>{{ . | plainify }}</p>
+  {{ end }}
+</article>
