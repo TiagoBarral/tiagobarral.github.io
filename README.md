@@ -1,31 +1,41 @@
-# Tiago Barral Portfolio
+# Tiago Barral — Portfolio & Learning Journal
 
-Personal portfolio and learning journal built with Hugo and deployed to GitHub Pages.
+A personal developer portfolio focused on building real systems in public.
 
-Live site: [https://tiagobarral.github.io/](https://tiagobarral.github.io/)
+## What This Site Is
 
-The site focuses on real projects, technical decisions, mistakes, and lessons learned while building.
+This site documents:
+
+- project work
+- project journals
+- technical decisions
+- architecture tradeoffs
+- debugging notes
+- lessons learned while building production-minded systems
+
+The goal is to document the messy middle: what broke, what changed, and what became more complex than expected.
+
+## Stack
+
+- Hugo
+- Custom layouts
+- Handwritten CSS
+- GitHub Pages
+
+## Structure
+
+- `content/` — projects, journal posts, guides, and page copy
+- `layouts/` — Hugo templates
+- `static/` — CSS and images
 
 ## Local Development
 
-```powershell
+```bash
 hugo server -D
 ```
 
 ## Build
 
-```powershell
+```bash
 hugo --gc
 ```
-
-## Structure
-
-- `content/projects/` — project pages and dated development journals
-- `content/blog/` — journal posts
-- `content/guides/` — learning guides
-- `layouts/` — Hugo templates
-- `static/css/style.css` — site styling
-
-## Deployment
-
-Pushes to `main` deploy through GitHub Actions to GitHub Pages.
