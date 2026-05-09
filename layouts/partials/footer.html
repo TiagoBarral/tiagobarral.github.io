@@ -1,5 +1,13 @@
 <footer class="site-footer">
-  <p>
-    Built with Hugo. Writing, mistakes, and progress by {{ site.Params.author }}.
-  </p>
+  <div class="site-footer__inner">
+    <p class="site-footer__copy">&copy; 2026 {{ site.Params.author }}</p>
+    <p class="site-footer__note">
+      Have a comment, question, or suggestion?
+      {{ with site.Params.github }}
+        <a href="{{ . }}" rel="me noopener" target="_blank">Reach me through GitHub</a>.
+      {{ else }}
+        Reach me through GitHub.
+      {{ end }}
+    </p>
+  </div>
 </footer>

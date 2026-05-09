@@ -3,13 +3,13 @@ title: "About"
 description: "Why this site exists."
 ---
 
-I am using this site to document my growth as a developer.
+I am using this site to document my growth as a developer by building real product work in public.
 
-Most portfolios only show polished outcomes. This one is meant to keep some of the process visible: what I tried, where I got stuck, what broke, and what changed after I understood the problem better.
+The main project right now is Oportuno: an AI-assisted workflow for discovering Portuguese small businesses with weak digital presence, enriching company data, and generating compliant outreach emails. It is a good learning project because it touches product thinking, data pipelines, scraping, AI integration, email delivery, testing, and deployment constraints.
 
 The goal is simple:
 
-- write honestly about projects
-- track learning over time
+- write honestly about technical decisions
+- track what changes as the project becomes more real
 - keep notes that future me can actually use
-- make the site easy to maintain with Markdown
+- show the messy middle without turning it into noise

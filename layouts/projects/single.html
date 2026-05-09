@@ -1,26 +1,130 @@
 {{ define "main" }}
-  <article class="article">
-    <header class="article-header">
-      <h1>{{ .Title }}</h1>
-      {{ with .Params.github }}
-        <p><a href="{{ . }}">View on GitHub</a></p>
-      {{ end }}
+  <article class="article project-article">
+    <a class="back-link" href="{{ "/projects/" | relURL }}">Back to projects</a>
+
+    <header class="project-header">
+      <div class="project-header__content">
+        <p class="project-date">
+          <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time>
+        </p>
+        <h1>{{ .Title }}</h1>
+        {{ with .Params.summary }}
+          <p class="project-summary">{{ . }}</p>
+        {{ end }}
+
+        <div class="project-header__meta" aria-label="Project tags">
+          {{ with .Params.status }}
+            <span class="is-primary">{{ . }}</span>
+          {{ end }}
+          {{ range first 4 .Params.stack }}
+            <span>{{ . }}</span>
+          {{ end }}
+        </div>
+
+        {{ with .Params.github }}
+          <a class="project-github" href="{{ . }}">View on GitHub</a>
+        {{ end }}
+      </div>
+
+      <aside class="project-info-card" aria-label="Project details">
+        {{ with .Params.stack }}
+          <div class="project-info-item">
+            <span class="project-info-icon" aria-hidden="true">▧</span>
+            <div>
+              <h2>Stack</h2>
+              <p>{{ delimit . ", " }}</p>
+            </div>
+          </div>
+        {{ end }}
+        {{ with .Params.status }}
+          <div class="project-info-item">
+            <span class="project-info-icon" aria-hidden="true">○</span>
+            <div>
+              <h2>Status</h2>
+              <p>{{ . }}</p>
+            </div>
+          </div>
+        {{ end }}
+        {{ with .Params.lesson }}
+          <div class="project-info-item">
+            <span class="project-info-icon" aria-hidden="true">◌</span>
+            <div>
+              <h2>Main lesson</h2>
+              <p>{{ . }}</p>
+            </div>
+          </div>
+        {{ end }}
+      </aside>
     </header>
 
-    <div class="project-facts">
-      {{ with .Params.stack }}
-        <p><strong>Stack:</strong> {{ delimit . ", " }}</p>
-      {{ end }}
-      {{ with .Params.status }}
-        <p><strong>Status:</strong> {{ . }}</p>
-      {{ end }}
-      {{ with .Params.lesson }}
-        <p><strong>Main lesson:</strong> {{ . }}</p>
-      {{ end }}
-    </div>
+    {{ with .Params.entries }}
+      <section class="project-journal" aria-labelledby="project-journal-title">
+        <div class="project-journal__heading">
+          <h2 id="project-journal-title">Development journal</h2>
+          <p>A log of progress, decisions, and lessons learned.</p>
+        </div>
 
-    <div class="content">
-      {{ .Content }}
-    </div>
+        <div class="journal-list">
+          {{ range $index, $entry := . }}
+            <details class="journal-entry{{ if eq $index 0 }} is-featured{{ end }}">
+              <div class="journal-entry__marker" aria-hidden="true"></div>
+              <summary class="journal-entry__summary">
+                <span class="journal-entry__content">
+                  {{ with index $entry "date" }}
+                    <span class="journal-date">{{ . }}</span>
+                  {{ end }}
+                  {{ with index $entry "title" }}
+                    <span class="journal-title">{{ . }}</span>
+                  {{ end }}
+                  {{ with index $entry "summary" }}
+                    <span class="journal-summary">{{ . }}</span>
+                  {{ end }}
+                  {{ with index $entry "sections" }}
+                    <span class="journal-section-tags" aria-label="Entry sections">
+                      {{ range . }}
+                        {{ with index . "label" }}
+                          <span>{{ . }}</span>
+                        {{ end }}
+                      {{ end }}
+                    </span>
+                  {{ end }}
+                </span>
+                <span class="journal-arrow" aria-hidden="true">›</span>
+              </summary>
+              {{ with index $entry "sections" }}
+                <div class="journal-sections">
+                  {{ range . }}
+                    <div class="journal-section">
+                      {{ with index . "label" }}
+                        <h4>{{ . }}</h4>
+                      {{ end }}
+                      {{ with index . "text" }}
+                        <p>{{ . | markdownify }}</p>
+                      {{ end }}
+                    </div>
+                  {{ end }}
+                </div>
+              {{ end }}
+              {{ with index . "notes" }}
+                <ul>
+                  {{ range . }}
+                    <li>{{ . }}</li>
+                  {{ end }}
+                </ul>
+              {{ end }}
+            </details>
+          {{ end }}
+        </div>
+
+        <aside class="journal-note">
+          <h2>About this journal</h2>
+          <p>Each entry captures what I built, what I was trying to learn, what went wrong, and what I would do differently. The goal is simple: ship, learn, and improve.</p>
+        </aside>
+      </section>
+    {{ end }}
+
+    <footer class="project-footer">
+      <a class="back-link" href="{{ "/projects/" | relURL }}">Back to projects</a>
+    </footer>
   </article>
 {{ end }}

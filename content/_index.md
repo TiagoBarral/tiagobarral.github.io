@@ -1,8 +1,8 @@
 ---
 title: "Home"
-description: "Developer portfolio and learning journal."
+description: "Developer portfolio and learning journal focused on building projects in public."
 ---
 
-I'm learning to code and build things with AI assistance. This site documents my experiments, mistakes, projects, and progress.
+This is my portfolio, learning journal, and proof of progress. I use this space to document what I build, what breaks, what I learn, and how each project changes the way I think.
 
-**What you'll find here:** project breakdowns, honest learning logs, bug stories, and proof that you do not need to know everything before you start building.
+Expect project breakdowns, development notes, practical guides, and honest reflections from building real software.

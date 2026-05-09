@@ -1,5 +1,5 @@
 ---
-title: "Blog"
+title: "Journal"
 description: "Learning notes, bugs, mistakes, and small wins."
 ---
 

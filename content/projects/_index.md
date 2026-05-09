@@ -1,6 +1,6 @@
 ---
 title: "Projects"
-description: "Project notes with the messy middle left in."
+description: "Product case studies with the engineering decisions left visible."
 ---
 
-Each project page is a short breakdown of what I built, what I was trying to learn, what went wrong, and what I would change next time.
+Each project page explains what I built, the product problem it solves, the technical decisions behind it, what broke, and what I would improve next.
