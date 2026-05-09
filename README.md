@@ -1,59 +1,31 @@
-# Developer Notebook
+# Tiago Barral Portfolio
 
-A minimal Hugo portfolio and learning journal.
+Personal portfolio and learning journal built with Hugo and deployed to GitHub Pages.
 
-## Local development
+Live site: [https://tiagobarral.github.io/](https://tiagobarral.github.io/)
+
+The site focuses on real projects, technical decisions, mistakes, and lessons learned while building.
+
+## Local Development
 
 ```powershell
 hugo server -D
 ```
 
-Open the local URL Hugo prints, usually `http://localhost:1313`.
-
-## Add a project
+## Build
 
 ```powershell
-hugo new projects/my-project.md
+hugo --gc
 ```
 
-Project pages use this reflection format:
+## Structure
 
-- What I built
-- What I was trying to learn
-- What went wrong
-- Biggest challenge / bug
-- What I learned
-- What I would do differently
-- GitHub link
+- `content/projects/` — project pages and dated development journals
+- `content/blog/` — journal posts
+- `content/guides/` — learning guides
+- `layouts/` — Hugo templates
+- `static/css/style.css` — site styling
 
-## Add a blog note
+## Deployment
 
-```powershell
-hugo new blog/my-note.md
-```
-
-## Deploy to GitHub Pages
-
-Create a new empty repository on GitHub, then run these commands from this folder:
-
-```powershell
-git init
-git add .
-git commit -m "Initial portfolio site"
-git branch -M main
-git remote add origin https://github.com/YOUR-USERNAME/YOUR-REPO.git
-git push -u origin main
-```
-
-Then connect it to GitHub Pages:
-
-1. Open the repository on GitHub.
-2. Go to **Settings**.
-3. Open **Pages** in the sidebar.
-4. Under **Build and deployment**, choose **GitHub Actions**.
-5. Push to `main` again whenever you want to publish changes.
-
-Before publishing, update `baseURL`, `params.author`, and `params.github` in `hugo.toml`.
-
-For a user site at `https://YOUR-USERNAME.github.io`, name the repository `YOUR-USERNAME.github.io`.
-For a project site, any repository name is fine. The workflow will pass GitHub Pages' URL to Hugo during the build.
+Pushes to `main` deploy through GitHub Actions to GitHub Pages.
