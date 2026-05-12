@@ -1,130 +1,92 @@
 {{ define "main" }}
-  <article class="article project-article">
-    <a class="back-link" href="{{ "/projects/" | relURL }}">Back to projects</a>
+  {{/* ===== Project header ===== */}}
+  <section class="ed-section" style="padding-bottom:32px;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:24px;">
+      <a href="{{ "/projects/" | relURL }}" style="color:inherit;text-decoration:none;">← All projects</a>
+      <span style="margin:0 12px;">/</span>
+      <span>{{ .Title }}</span>
+    </div>
 
-    <header class="project-header">
-      <div class="project-header__content">
-        <p class="project-date">
-          <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time>
-        </p>
-        <h1>{{ .Title }}</h1>
-        {{ with .Params.summary }}
-          <p class="project-summary">{{ . }}</p>
+    <div class="ed-project-header">
+      <div>
+        {{ with .Params.status }}
+          <div class="kicker" style="color:var(--accent);margin-bottom:14px;">● {{ . }}</div>
         {{ end }}
-
-        <div class="project-header__meta" aria-label="Project tags">
-          {{ with .Params.status }}
-            <span class="is-primary">{{ . }}</span>
-          {{ end }}
-          {{ range first 4 .Params.stack }}
-            <span>{{ . }}</span>
-          {{ end }}
-        </div>
-
-        {{ with .Params.github }}
-          <a class="project-github" href="{{ . }}">View on GitHub</a>
+        <h1 style="font-family:'Fraunces',serif;font-weight:400;font-size:120px;letter-spacing:-0.04em;line-height:0.92;margin:0 0 24px;">
+          {{ .Title }}<em style="color:var(--accent);font-style:italic;">.</em>
+        </h1>
+        {{ with .Params.summary }}
+          <p style="font-size:22px;line-height:1.5;max-width:680px;margin:0;">{{ . }}</p>
         {{ end }}
       </div>
 
-      <aside class="project-info-card" aria-label="Project details">
-        {{ with .Params.stack }}
-          <div class="project-info-item">
-            <span class="project-info-icon" aria-hidden="true">▧</span>
-            <div>
-              <h2>Stack</h2>
-              <p>{{ delimit . ", " }}</p>
-            </div>
-          </div>
-        {{ end }}
-        {{ with .Params.status }}
-          <div class="project-info-item">
-            <span class="project-info-icon" aria-hidden="true">○</span>
-            <div>
-              <h2>Status</h2>
-              <p>{{ . }}</p>
-            </div>
-          </div>
-        {{ end }}
-        {{ with .Params.lesson }}
-          <div class="project-info-item">
-            <span class="project-info-icon" aria-hidden="true">◌</span>
-            <div>
-              <h2>Main lesson</h2>
-              <p>{{ . }}</p>
-            </div>
-          </div>
-        {{ end }}
+      <aside class="ed-project-meta">
+        {{ with .Params.status }}<div class="meta-row"><span class="k">Status</span><span>{{ . }}</span></div>{{ end }}
+        {{ with .Date }}<div class="meta-row"><span class="k">Started</span><span>{{ .Format "Jan 2006" }}</span></div>{{ end }}
+        {{ with .Lastmod }}<div class="meta-row"><span class="k">Updated</span><span>{{ .Format "Jan 2, 2006" }}</span></div>{{ end }}
+        {{ with .Params.stack }}<div class="meta-row"><span class="k">Stack</span><span>{{ delimit . " · " }}</span></div>{{ end }}
+        {{ with or .Params.repo .Params.github }}<div class="meta-row"><span class="k">Repo</span><a href="{{ . }}" style="color:var(--accent);text-decoration:none;font-family:'JetBrains Mono',monospace;font-size:11px;">View source ↗</a></div>{{ end }}
+        {{ with .Params.live }}<div class="meta-row"><span class="k">Live</span><a href="{{ . }}" style="color:var(--accent);text-decoration:none;font-family:'JetBrains Mono',monospace;font-size:11px;">Open site ↗</a></div>{{ end }}
       </aside>
-    </header>
+    </div>
+  </section>
 
-    {{ with .Params.entries }}
-      <section class="project-journal" aria-labelledby="project-journal-title">
-        <div class="project-journal__heading">
-          <h2 id="project-journal-title">Development journal</h2>
-          <p>A log of progress, decisions, and lessons learned.</p>
-        </div>
-
-        <div class="journal-list">
-          {{ range $index, $entry := . }}
-            <details class="journal-entry{{ if eq $index 0 }} is-featured{{ end }}">
-              <div class="journal-entry__marker" aria-hidden="true"></div>
-              <summary class="journal-entry__summary">
-                <span class="journal-entry__content">
-                  {{ with index $entry "date" }}
-                    <span class="journal-date">{{ . }}</span>
-                  {{ end }}
-                  {{ with index $entry "title" }}
-                    <span class="journal-title">{{ . }}</span>
-                  {{ end }}
-                  {{ with index $entry "summary" }}
-                    <span class="journal-summary">{{ . }}</span>
-                  {{ end }}
-                  {{ with index $entry "sections" }}
-                    <span class="journal-section-tags" aria-label="Entry sections">
-                      {{ range . }}
-                        {{ with index . "label" }}
-                          <span>{{ . }}</span>
-                        {{ end }}
-                      {{ end }}
-                    </span>
-                  {{ end }}
-                </span>
-                <span class="journal-arrow" aria-hidden="true">›</span>
-              </summary>
-              {{ with index $entry "sections" }}
-                <div class="journal-sections">
-                  {{ range . }}
-                    <div class="journal-section">
-                      {{ with index . "label" }}
-                        <h4>{{ . }}</h4>
-                      {{ end }}
-                      {{ with index . "text" }}
-                        <p>{{ . | markdownify }}</p>
-                      {{ end }}
-                    </div>
-                  {{ end }}
-                </div>
-              {{ end }}
-              {{ with index . "notes" }}
-                <ul>
-                  {{ range . }}
-                    <li>{{ . }}</li>
-                  {{ end }}
-                </ul>
-              {{ end }}
-            </details>
-          {{ end }}
-        </div>
-
-        <aside class="journal-note">
-          <h2>About this journal</h2>
-          <p>Each entry captures what I built, what I was trying to learn, what went wrong, and what I would do differently. The goal is simple: ship, learn, and improve.</p>
+  {{/* ===== Body prose + sticky TOC ===== */}}
+  {{ if .Content }}
+    <section class="ed-section ed-section--paper" style="padding-top:48px;">
+      <div class="ed-project-body">
+        <aside class="ed-project-toc">
+          <div class="kicker">— Contents</div>
+          {{ with .TableOfContents }}{{ . }}{{ end }}
         </aside>
-      </section>
-    {{ end }}
+        <article class="ed-prose">{{ .Content }}</article>
+      </div>
+    </section>
+  {{ end }}
 
-    <footer class="project-footer">
-      <a class="back-link" href="{{ "/projects/" | relURL }}">Back to projects</a>
-    </footer>
-  </article>
+  {{/* ===== Project journal (entries from front matter) ===== */}}
+  {{ with .Params.entries }}
+    <section class="ed-section">
+      <div class="section-head">
+        <div>
+          <div class="kicker">— Project journal</div>
+          <h2 class="section-heading">Notes from the <em>messy middle</em>.</h2>
+        </div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);">{{ len . }} entries</span>
+      </div>
+      <div class="ed-entries">
+        {{ range sort . "sortDate" "desc" }}
+          <article class="ed-entry">
+            <div class="ed-entry-date">{{ .date }}</div>
+            <div class="ed-entry-body">
+              <h3>{{ .title }}</h3>
+              <p>{{ .summary | safeHTML }}</p>
+            </div>
+          </article>
+        {{ end }}
+      </div>
+    </section>
+  {{ end }}
+
+  {{/* ===== Prev/Next ===== */}}
+  {{ if or .PrevInSection .NextInSection }}
+    <section class="ed-section ed-section--paper" style="padding-top:32px;">
+      <div class="ed-prevnext">
+        {{ with .PrevInSection }}
+          <a href="{{ .RelPermalink }}" class="ed-pn-card">
+            <span class="kicker">← Previous project</span>
+            <strong>{{ .Title }}</strong>
+            {{ with .Params.summary }}<p>{{ truncate 80 . }}</p>{{ end }}
+          </a>
+        {{ else }}<div></div>{{ end }}
+        {{ with .NextInSection }}
+          <a href="{{ .RelPermalink }}" class="ed-pn-card ed-pn-card--right">
+            <span class="kicker">Next project →</span>
+            <strong>{{ .Title }}</strong>
+            {{ with .Params.summary }}<p>{{ truncate 80 . }}</p>{{ end }}
+          </a>
+        {{ else }}<div></div>{{ end }}
+      </div>
+    </section>
+  {{ end }}
 {{ end }}

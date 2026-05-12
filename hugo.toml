@@ -13,6 +13,9 @@ title = "Tiago Barral"
   [markup.goldmark]
     [markup.goldmark.renderer]
       unsafe = false
+  [markup.tableOfContents]
+    startLevel = 2
+    endLevel = 3
 
 [menus]
   [[menus.main]]
