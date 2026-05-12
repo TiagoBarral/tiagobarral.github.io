@@ -1,249 +1,214 @@
 {{ define "main" }}
   {{ $featured := where (where site.RegularPages "Section" "projects") ".Params.featured" true }}
   {{ $mainProject := index $featured 0 }}
+  {{ $allProjects := where site.RegularPages "Section" "projects" }}
+  {{ $posts := where site.RegularPages "Section" "blog" }}
+  {{ $guides := where site.RegularPages "Section" "guides" }}
 
-  <section class="hero">
-    <div class="hero-content">
-      <p class="eyebrow">Developer portfolio & learning journal</p>
-      <h1>Building useful projects and documenting the <span class="headline-accent">messy middle.</span></h1>
-      <div class="home-copy lead-copy">
-        {{ .Content }}
+  {{/* ============ HERO ============ */}}
+  <section class="ed-hero">
+    <div class="ed-hero-body">
+      <div class="issue">
+        <span>№ 14</span><span class="rule"></span><span>The Editorial Index</span>
       </div>
-      <div class="hero-actions">
-        <a class="button button-primary" href="{{ "/projects/" | relURL }}">Explore projects <span aria-hidden="true">→</span></a>
-        <a class="button button-secondary" href="{{ "/blog/" | relURL }}">Read the journal <span aria-hidden="true">→</span></a>
+      <h1 class="ed-hero-headline">
+        A working journal of someone
+        <em class="ed-rotator" data-words="documenting,questioning,rebuilding,noticing,finishing">documenting</em>
+        the things they're <span class="underline">building</span>.
+      </h1>
+      <div class="ed-hero-lead">{{ .Content }}</div>
+      <div class="ed-hero-actions">
+        <a class="btn-primary" href="{{ "/projects/" | relURL }}">Read the projects →</a>
+        <a class="btn-secondary" href="{{ "/blog/" | relURL }}">Today's journal entry</a>
       </div>
-      <ul class="hero-meta" aria-label="Site highlights">
-        <li>Projects</li>
-        <li>Learning logs</li>
-        <li>Practical guides</li>
-      </ul>
     </div>
 
-    <aside class="about-profile-card hero-profile-card" aria-label="About Tiago Barral">
-      <div class="about-profile-image-frame">
-        <img
-          class="about-profile-image"
-          src="{{ "/images/profile-circle.png" | relURL }}"
-          alt="Portrait of Tiago Barral"
-        >
+    <aside class="ed-editor-card" aria-label="About Tiago Barral">
+      <div class="ed-editor-head">
+        <div>
+          <div class="kicker" style="margin:0">— The editor</div>
+          <strong class="ed-editor-name">{{ site.Params.author }}</strong>
+        </div>
+        <span class="pill">● Online</span>
       </div>
-
-      <div class="about-profile-list">
-        <div class="about-profile-item">
-          <span class="about-profile-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" focusable="false">
-              <path d="M4.5 16.5c-1.5 1.3-2 5-2 5s3.7-.5 5-2c.7-.8.7-2.1-.1-2.9-.8-.8-2.1-.8-2.9-.1Z" />
-              <path d="m12 15-3-3a22 22 0 0 1 2-4A12.9 12.9 0 0 1 22 2c0 2.7-.8 7.5-6 11a22 22 0 0 1-4 2Z" />
-              <path d="M9 12H4s.6-3 2-4c1.6-1.1 5 0 5 0" />
-              <path d="M12 15v5s3-.6 4-2c1.1-1.6 0-5 0-5" />
-              <path d="M15 9h.01" />
-            </svg>
-          </span>
-          <div>
-            <h2>Building</h2>
-            <p>Production-minded side projects</p>
-          </div>
-        </div>
-
-        <div class="about-profile-item">
-          <span class="about-profile-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" focusable="false">
-              <circle cx="12" cy="12" r="7" />
-              <circle cx="12" cy="12" r="3" />
-              <path d="M12 2v3" />
-              <path d="M12 19v3" />
-              <path d="M2 12h3" />
-              <path d="M19 12h3" />
-            </svg>
-          </span>
-          <div>
-            <h2>Focus</h2>
-            <p>Agentic AI, system design, and real-world constraints</p>
-          </div>
-        </div>
-
-        <div class="about-profile-item">
-          <span class="about-profile-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" focusable="false">
-              <path d="M9 18h6" />
-              <path d="M10 22h4" />
-              <path d="M8 14c-1-1.1-1.5-2.3-1.5-3.8C6.5 7 9 4.5 12 4.5s5.5 2.5 5.5 5.7c0 1.5-.5 2.7-1.5 3.8-.9.9-1.5 2-1.5 3.2h-5c0-1.2-.6-2.3-1.5-3.2Z" />
-            </svg>
-          </span>
-          <div>
-            <h2>Thinking about</h2>
-            <p>How systems break and become reliable</p>
-          </div>
-        </div>
+      <div class="photo-box" style="aspect-ratio: 1/1;">
+        <img src="{{ "/images/profile-circle.png" | relURL }}" alt="Portrait of {{ site.Params.author }}">
+      </div>
+      <div class="ed-editor-meta">
+        <div class="meta-row"><span class="k">Based</span><span>Lisbon, PT</span></div>
+        <div class="meta-row"><span class="k">Building</span><span>
+          {{ range first 2 $allProjects }}{{ .Title }}{{ if not (eq . (index (first 2 $allProjects) 1)) }} · {{ end }}{{ end }}
+        </span></div>
+        <div class="meta-row"><span class="k">Stack</span><span>Next · Postgres · Claude</span></div>
+        <div class="meta-row"><span class="k">Reading</span><span>A Philosophy of Software Design</span></div>
       </div>
     </aside>
   </section>
 
+  {{/* ============ FEATURED PROJECT ============ */}}
   {{ with $mainProject }}
-    <section class="panel home-featured">
-      <div class="section-heading">
-        <h2><span class="section-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" focusable="false">
-            <path d="m12 3 2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8-4.3-4.1 5.9-.9Z" />
-          </svg>
-        </span>Featured Project</h2>
-        <a href="{{ "/projects/" | relURL }}">View all projects <span aria-hidden="true">→</span></a>
+    <section class="ed-section">
+      <div class="section-head">
+        <div>
+          <div class="kicker">— Featured projects</div>
+          <h2 class="section-heading">In the <em>workshop</em>.</h2>
+        </div>
+        <a class="more" href="{{ "/projects/" | relURL }}">All projects ({{ len $allProjects }}) ↗</a>
       </div>
-      <a class="home-project-card" href="{{ .RelPermalink }}">
-        <span class="home-project-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" focusable="false">
-            <path d="M4.5 16.5c-1.5 1.3-2 5-2 5s3.7-.5 5-2c.7-.8.7-2.1-.1-2.9-.8-.8-2.1-.8-2.9-.1Z" />
-            <path d="m12 15-3-3a22 22 0 0 1 2-4A12.9 12.9 0 0 1 22 2c0 2.7-.8 7.5-6 11a22 22 0 0 1-4 2Z" />
-            <path d="M9 12H4s.6-3 2-4c1.6-1.1 5 0 5 0" />
-            <path d="M12 15v5s3-.6 4-2c1.1-1.6 0-5 0-5" />
-            <path d="M15 9h.01" />
-          </svg>
-        </span>
-        <div class="home-project-body">
-          <h3>{{ .Title }}</h3>
-          <p class="home-project-meta">
-            {{ with .Params.status }}<span class="is-status">{{ . }}</span>{{ end }}
-            {{ range first 4 .Params.stack }}<span>{{ . }}</span>{{ end }}
-          </p>
-          {{ with .Params.summary }}<p class="home-project-summary">{{ . }}</p>{{ end }}
+
+      <div class="ed-project-row">
+        <a class="project-card featured" href="{{ .RelPermalink }}">
+          <span class="num">01</span>
+          <div class="top">
+            {{ with .Params.status }}<span class="pill warm" style="background:rgba(194,96,43,0.25);color:#f8c89c">● {{ . }}</span>{{ end }}
+            {{ with .Date }}<span>Updated {{ .Format "2 Jan 2006" }}</span>{{ end }}
+          </div>
+          <h3>{{ .Title }}<em>.</em></h3>
+          {{ with .Params.summary }}<p class="desc">{{ . }}</p>{{ end }}
           {{ with .Params.stack }}
-            <ul class="home-project-tags" aria-label="Technology stack">
-              {{ range first 5 . }}
-                <li>{{ . }}</li>
-              {{ end }}
-            </ul>
+            <div class="stack">
+              {{ range first 6 . }}<span>{{ . }}</span>{{ end }}
+            </div>
+          {{ end }}
+          <span class="arrow">Read the project →</span>
+        </a>
+
+        <div class="ed-project-secondary">
+          {{ range first 2 (where $allProjects ".Params.featured" "!=" true) }}
+            <a class="project-card" href="{{ .RelPermalink }}" style="min-height:0; padding: 24px;">
+              <div class="top">
+                {{ with .Params.status }}<span class="pill">● {{ . }}</span>{{ end }}
+              </div>
+              <h3 style="font-size:32px;">{{ .Title }}</h3>
+              {{ with .Params.summary }}<p class="desc" style="font-size:14px;">{{ truncate 120 . }}</p>{{ end }}
+            </a>
           {{ end }}
         </div>
-        <span class="home-project-arrow" aria-hidden="true">→</span>
-      </a>
+      </div>
     </section>
   {{ end }}
 
+  {{/* ============ JOURNAL (project entries) ============ */}}
   {{ $workEntries := slice }}
-  {{ range where site.RegularPages "Section" "projects" }}
+  {{ range $allProjects }}
     {{ $project := . }}
     {{ range .Params.entries }}
-      {{ $workEntries = $workEntries | append (dict "project" $project.Title "url" $project.RelPermalink "date" .date "sortDate" .sortDate "title" .title "summary" .summary) }}
+      {{ $workEntries = $workEntries | append (dict
+          "project" $project.Title
+          "url" $project.RelPermalink
+          "date" .date
+          "sortDate" .sortDate
+          "title" .title
+          "summary" .summary) }}
     {{ end }}
   {{ end }}
   {{ with $workEntries }}
-      <section class="panel home-journal">
-        <div class="section-heading">
-          <h2><span class="section-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" focusable="false">
-              <path d="M12 20h9" />
-              <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
-            </svg>
-          </span><span>Recent Project Work</span><small>Progress notes from the projects I'm actively building.</small></h2>
-        <a href="{{ "/projects/" | relURL }}">View project journals <span aria-hidden="true">→</span></a>
-      </div>
-      <div class="journal-preview-list">
-          {{ range first 5 (sort . "sortDate" "desc") }}
-            <a class="journal-preview-row" href="{{ .url }}">
-              <time>{{ replace .date "April" "Apr" }}</time>
-              <span class="journal-preview-dot" aria-hidden="true"></span>
-              <span class="journal-project-pill">{{ .project }}</span>
-              <span class="journal-preview-body">
-                <strong>{{ .title }}</strong>
-                <span>{{ .summary }}</span>
-              </span>
-              <span class="journal-preview-arrow" aria-hidden="true">→</span>
-            </a>
-          {{ end }}
-          <a class="journal-more-row" href="{{ "/projects/" | relURL }}">View more project journals <span aria-hidden="true">↓</span></a>
+    <section class="ed-section ed-section--paper">
+      <div class="section-head">
+        <div>
+          <div class="kicker">— From the journal</div>
+          <h2 class="section-heading">Notes from the <em>messy middle</em>.</h2>
         </div>
-      </section>
-  {{ end }}
-
-  {{ $posts := where site.RegularPages "Section" "blog" }}
-  {{ if $posts }}
-    <section class="panel home-posts">
-      <div class="section-heading">
-        <h2><span class="section-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" focusable="false">
-            <path d="M12 6.8A5.5 5.5 0 0 0 5 5.5v12A5.5 5.5 0 0 1 12 19" />
-            <path d="M12 6.8A5.5 5.5 0 0 1 19 5.5v12A5.5 5.5 0 0 0 12 19" />
-            <path d="M12 6.8V19" />
-          </svg>
-        </span>From the Journal</h2>
-        <a href="{{ "/blog/" | relURL }}">View all journal posts <span aria-hidden="true">→</span></a>
+        <a class="more" href="{{ "/projects/" | relURL }}">All entries ↗</a>
       </div>
-      <div class="home-post-grid">
-        {{ range $i, $post := first 3 $posts }}
-          <article class="home-post-card">
-            <span class="home-post-icon" aria-hidden="true">
-              {{ if eq $i 1 }}
-                <svg viewBox="0 0 24 24" focusable="false">
-                  <path d="M3 12a9 9 0 0 1 15.2-6.5" />
-                  <path d="M18 3v5h-5" />
-                  <path d="M21 12a9 9 0 0 1-15.2 6.5" />
-                  <path d="M6 21v-5h5" />
-                </svg>
-              {{ else if eq $i 2 }}
-                <svg viewBox="0 0 24 24" focusable="false">
-                  <path d="M14.7 6.3a4 4 0 0 0-5 5L3 18v3h3l6.7-6.7a4 4 0 0 0 5-5" />
-                  <path d="m16 5 3 3" />
-                </svg>
-              {{ else }}
-                <svg viewBox="0 0 24 24" focusable="false">
-                  <path d="M6 3h9l3 3v15H6z" />
-                  <path d="M14 3v4h4" />
-                  <path d="M9 12h6" />
-                  <path d="M9 16h4" />
-                </svg>
-              {{ end }}
-            </span>
-            <div>
-              <time datetime="{{ $post.Date.Format "2006-01-02" }}">{{ upper ($post.Date.Format "Jan 2, 2006") }}</time>
-              <h3><a href="{{ $post.RelPermalink }}">{{ $post.Title }}</a></h3>
-              {{ with $post.Params.summary }}<p>{{ . }}</p>{{ end }}
-              <a class="read-more-link" href="{{ $post.RelPermalink }}">Read post <span aria-hidden="true">→</span></a>
+      <div class="ed-journal-grid">
+        {{ range first 6 (sort . "sortDate" "desc") }}
+          <a class="journal-row" href="{{ .url }}" style="grid-template-columns: 90px 1fr 30px;">
+            <span class="date">{{ replace .date "April" "Apr" | replace "March" "Mar" | replace "February" "Feb" | replace "January" "Jan" | replace "May" "May" }}</span>
+            <div class="body">
+              <h3 style="font-size:22px;">{{ .title }}</h3>
+              <p>{{ truncate 130 .summary }}</p>
             </div>
-          </article>
+            <span class="arr">→</span>
+          </a>
         {{ end }}
       </div>
     </section>
   {{ end }}
 
-  {{ $guides := where site.RegularPages "Section" "guides" }}
-  {{ if $guides }}
-    <section class="panel home-guides">
-      <div class="section-heading">
-        <h2><span class="section-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" focusable="false">
-            <path d="M21 12a7.5 7.5 0 0 1-7.5 7.5H8l-5 2 1.7-4.2A7.5 7.5 0 1 1 21 12Z" />
-          </svg>
-        </span>Learning Guides</h2>
-        <a href="{{ "/guides/" | relURL }}">View all guides <span aria-hidden="true">→</span></a>
+  {{/* ============ GUIDES ============ */}}
+  {{ with $guides }}
+    <section class="ed-section">
+      <div class="section-head">
+        <div>
+          <div class="kicker">— Practical field notes</div>
+          <h2 class="section-heading">Guides, in <em>parts</em>.</h2>
+        </div>
+        <a class="more" href="{{ "/guides/" | relURL }}">All guides ↗</a>
       </div>
-      <div class="home-guide-grid">
-        {{ range $i, $guide := first 2 $guides }}
-          <article class="home-guide-card">
-            <span class="home-guide-icon" aria-hidden="true">
-              {{ if eq $i 0 }}
-                <svg viewBox="0 0 24 24" focusable="false">
-                  <path d="M8 9 4 12l4 3" />
-                  <path d="m16 9 4 3-4 3" />
-                  <path d="m14 5-4 14" />
-                </svg>
-              {{ else }}
-                <svg viewBox="0 0 24 24" focusable="false">
-                  <path d="M4.5 16.5c-1.5 1.3-2 5-2 5s3.7-.5 5-2c.7-.8.7-2.1-.1-2.9-.8-.8-2.1-.8-2.9-.1Z" />
-                  <path d="m12 15-3-3a22 22 0 0 1 2-4A12.9 12.9 0 0 1 22 2c0 2.7-.8 7.5-6 11a22 22 0 0 1-4 2Z" />
-                  <path d="M15 9h.01" />
-                </svg>
-              {{ end }}
-            </span>
-            <div>
-              <h3><a href="{{ $guide.RelPermalink }}">{{ $guide.Title }}</a></h3>
-              <p class="card-meta">Guide{{ with $guide.Params.part }} <span>•</span> Part {{ . }}{{ end }}</p>
-              {{ with $guide.Params.summary }}<p>{{ . }}</p>{{ end }}
-              <a class="read-more-link" href="{{ $guide.RelPermalink }}">Read guide <span aria-hidden="true">→</span></a>
-            </div>
-          </article>
+      <div class="ed-guide-grid">
+        {{ range $i, $g := first 3 . }}
+          <a class="guide-small" href="{{ $g.RelPermalink }}" style="text-decoration:none;color:var(--ink);">
+            <span class="ornament">{{ if eq $i 0 }}i{{ else if eq $i 1 }}ii{{ else }}iii{{ end }}</span>
+            <div class="part">{{ with $g.Params.part }}Part {{ . }}{{ else }}Part {{ add $i 1 }}{{ end }}</div>
+            <h3>{{ $g.Title }}</h3>
+            {{ with $g.Params.summary }}<p>{{ truncate 110 . }}</p>{{ end }}
+          </a>
         {{ end }}
       </div>
     </section>
   {{ end }}
+
+  {{/* ============ FROM THE JOURNAL (blog posts) ============ */}}
+  {{ with $posts }}
+    <section class="ed-section ed-section--paper">
+      <div class="section-head">
+        <div>
+          <div class="kicker">— Long-form</div>
+          <h2 class="section-heading">From the <em>journal</em>.</h2>
+        </div>
+        <a class="more" href="{{ "/blog/" | relURL }}">All posts ↗</a>
+      </div>
+      <div class="ed-post-grid">
+        {{ range first 3 . }}
+          <a class="card elevated" href="{{ .RelPermalink }}" style="text-decoration:none; color:var(--ink); display:flex; flex-direction:column; gap:10px;">
+            <time class="kicker" style="margin:0">{{ .Date.Format "Jan 2, 2006" }}</time>
+            <h3 style="font-family:'Fraunces',serif; font-size:24px; letter-spacing:-0.01em; line-height:1.1;">{{ .Title }}</h3>
+            {{ with .Params.summary }}<p style="font-size:14px; color:var(--muted); line-height:1.55; margin:0;">{{ truncate 140 . }}</p>{{ end }}
+            <span style="margin-top:auto; color:var(--accent); font-family:'JetBrains Mono',monospace; font-size:12px;">Read post →</span>
+          </a>
+        {{ end }}
+      </div>
+    </section>
+  {{ end }}
+
+  {{/* ============ RIGHT NOW ============ */}}
+  <section class="ed-now">
+    <div class="ed-now-grid">
+      <div>
+        <div class="kicker" style="color:rgba(248,241,223,0.6);">— Status, this week</div>
+        <h2 class="section-heading" style="color:var(--cream); font-size:80px;">Right <em style="color:var(--warm);font-style:italic;">now</em>.</h2>
+        <p class="ed-now-lead">Pushing Oportuno toward first real users. Tightening failure modes, polishing the empty states. Reading Ousterhout in the mornings.</p>
+        <a class="btn-secondary" href="{{ "/about/" | relURL }}" style="color:var(--cream); border-color:rgba(248,241,223,0.5); margin-top:24px;">Read more on the about page →</a>
+      </div>
+      <div class="ed-now-list">
+        {{ range first 3 $allProjects }}
+          <div class="ed-now-item">
+            <div>
+              <div class="kicker" style="color:rgba(248,241,223,0.5);margin:0">{{ with .Params.status }}{{ . }}{{ else }}In progress{{ end }}</div>
+              <strong style="font-family:'Fraunces',serif;font-size:22px;">{{ .Title }}</strong>
+            </div>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--warm);">→</span>
+          </div>
+        {{ end }}
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Cycling italic word in headline
+    (function () {
+      var el = document.querySelector('.ed-rotator');
+      if (!el) return;
+      var words = (el.dataset.words || '').split(',').filter(Boolean);
+      if (words.length < 2) return;
+      var i = 0;
+      setInterval(function () {
+        i = (i + 1) % words.length;
+        el.style.opacity = '0';
+        setTimeout(function () { el.textContent = words[i]; el.style.opacity = '1'; }, 180);
+      }, 2600);
+      el.style.transition = 'opacity 220ms ease';
+    })();
+  </script>
 {{ end }}
