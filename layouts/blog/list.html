@@ -1,0 +1,35 @@
+{{ define "main" }}
+  {{ $posts := .Pages.ByDate.Reverse }}
+
+  <section class="ed-section">
+    <div class="section-head">
+      <div>
+        <div class="kicker">— The journal</div>
+        <h1 class="section-heading" style="font-size:96px;">Long-form <em>writing</em>.</h1>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);text-align:right;">
+        {{ len $posts }} entries
+      </div>
+    </div>
+    {{ with .Content }}<div class="ed-hero-lead" style="max-width:720px;margin-bottom:32px;">{{ . }}</div>{{ end }}
+  </section>
+
+  <section class="ed-section ed-section--paper" style="padding-top:24px;">
+    <div class="ed-journal-list">
+      {{ range $posts }}
+        <a class="journal-long-row" href="{{ .RelPermalink }}">
+          <span class="date">{{ .Date.Format "Jan 2, 2006" }}</span>
+          <div class="body">
+            <h3>{{ .Title }}</h3>
+            {{ with .Params.summary }}<p>{{ . }}</p>{{ else }}<p>{{ .Summary | plainify | truncate 160 }}</p>{{ end }}
+            <div class="row-meta">
+              <span>{{ math.Round (div (countwords .Plain) 200.0) }} min read</span>
+              {{ with .Params.tags }}<span>· {{ delimit . " · " }}</span>{{ end }}
+            </div>
+          </div>
+          <span class="arr">→</span>
+        </a>
+      {{ end }}
+    </div>
+  </section>
+{{ end }}

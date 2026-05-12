@@ -1,0 +1,51 @@
+{{ define "main" }}
+  {{ $guides := .Pages }}
+  {{ $featured := where $guides ".Params.featured" true }}
+  {{ $rest := where $guides ".Params.featured" "!=" true }}
+
+  <section class="ed-section">
+    <div class="section-head">
+      <div>
+        <div class="kicker">— Field notes</div>
+        <h1 class="section-heading" style="font-size:96px;">Practical <em>guides</em>.</h1>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);text-align:right;">{{ len $guides }} guides</div>
+    </div>
+    {{ with .Content }}<div class="ed-hero-lead" style="max-width:720px;margin-bottom:32px;">{{ . }}</div>{{ end }}
+  </section>
+
+  {{ with index $featured 0 }}
+    <section class="ed-section" style="padding-top:0;">
+      <div class="kicker" style="margin-bottom:16px;">— Featured</div>
+      <a href="{{ .RelPermalink }}" class="guide-featured">
+        <div>
+          <div class="kicker" style="color:var(--warm);margin-bottom:18px;">{{ with .Params.parts }}{{ len . }} parts{{ else }}Multi-part guide{{ end }}</div>
+          <h2>{{ .Title }}<em>.</em></h2>
+          {{ with .Params.summary }}<p>{{ . }}</p>{{ end }}
+          <span class="arrow">Start reading →</span>
+        </div>
+        {{ with .Params.parts }}
+        <ol class="guide-parts">
+          {{ range $i, $p := . }}
+            <li><span class="n">{{ printf "%02d" (add $i 1) }}</span><span>{{ $p }}</span></li>
+          {{ end }}
+        </ol>
+        {{ end }}
+      </a>
+    </section>
+  {{ end }}
+
+  <section class="ed-section ed-section--paper">
+    <div class="kicker" style="margin-bottom:16px;">— More guides</div>
+    <div class="ed-guide-grid">
+      {{ range $rest }}
+        <a class="guide-small" href="{{ .RelPermalink }}">
+          <span class="ornament">§</span>
+          <div class="part">{{ with .Params.part }}Part {{ . }}{{ else }}Guide{{ end }}</div>
+          <h3>{{ .Title }}</h3>
+          {{ with .Params.summary }}<p>{{ truncate 130 . }}</p>{{ end }}
+        </a>
+      {{ end }}
+    </div>
+  </section>
+{{ end }}

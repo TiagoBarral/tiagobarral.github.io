@@ -1,12 +1,48 @@
 {{ define "main" }}
-  <section class="about-page">
-    <div class="about-copy">
-      <p class="eyebrow">About</p>
-      <h1>{{ .Title }}</h1>
-      <div class="about-content">
-        {{ .Content }}
-      </div>
-    </div>
+  <section class="ed-section">
+    <div class="kicker" style="margin-bottom:14px;">— The editor</div>
+    <div class="ed-about-grid">
+      <div>
+        <h1 style="font-family:'Fraunces',serif;font-weight:400;font-size:104px;letter-spacing:-0.04em;line-height:0.95;margin:0 0 28px;">
+          About <em style="color:var(--accent);font-style:italic;">me</em>.
+        </h1>
+        <div class="ed-prose" style="max-width:680px;">{{ .Content }}</div>
 
+        {{ with .Params.interests }}
+          <div style="margin-top:48px;">
+            <div class="kicker">— Currently interested in</div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;">
+              {{ range . }}<span class="pill">{{ . }}</span>{{ end }}
+            </div>
+          </div>
+        {{ end }}
+
+        {{ with .Params.elsewhere }}
+          <div style="margin-top:48px;">
+            <div class="kicker">— Elsewhere</div>
+            <div class="ed-elsewhere">
+              {{ range . }}
+                <a href="{{ .url }}">
+                  <strong>{{ .label }}</strong>
+                  {{ with .handle }}<span>{{ . }}</span>{{ end }}
+                </a>
+              {{ end }}
+            </div>
+          </div>
+        {{ end }}
+      </div>
+
+      <aside class="ed-about-card">
+        <div class="photo-box" style="aspect-ratio:1/1;">
+          <img src="{{ "/images/profile-circle.png" | relURL }}" alt="Portrait of {{ site.Params.author }}">
+        </div>
+        <div class="ed-editor-meta">
+          <div class="meta-row"><span class="k">Name</span><span>{{ site.Params.author }}</span></div>
+          {{ with .Params.based }}<div class="meta-row"><span class="k">Based</span><span>{{ . }}</span></div>{{ end }}
+          {{ with .Params.role }}<div class="meta-row"><span class="k">Role</span><span>{{ . }}</span></div>{{ end }}
+          {{ with .Params.email }}<div class="meta-row"><span class="k">Email</span><a href="mailto:{{ . }}" style="color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:11px;">{{ . }}</a></div>{{ end }}
+        </div>
+      </aside>
+    </div>
   </section>
 {{ end }}
