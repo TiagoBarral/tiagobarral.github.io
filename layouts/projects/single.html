@@ -56,13 +56,26 @@
       </div>
       <div class="ed-entries">
         {{ range sort . "sortDate" "desc" }}
-          <article class="ed-entry">
-            <div class="ed-entry-date">{{ .date }}</div>
-            <div class="ed-entry-body">
-              <h3>{{ .title }}</h3>
-              <p>{{ .summary | safeHTML }}</p>
-            </div>
-          </article>
+          <details class="ed-entry">
+            <summary class="ed-entry-summary">
+              <span class="ed-entry-date">{{ .date }}</span>
+              <span class="ed-entry-body">
+                <h3>{{ .title }}</h3>
+                <p>{{ .summary | safeHTML }}</p>
+              </span>
+              <span class="ed-entry-toggle" aria-hidden="true"></span>
+            </summary>
+            {{ with .sections }}
+              <div class="ed-entry-sections">
+                {{ range . }}
+                  <section class="ed-entry-section">
+                    {{ with .label }}<h4>{{ . }}</h4>{{ end }}
+                    {{ with .text }}<div class="ed-entry-section-text">{{ . | markdownify }}</div>{{ end }}
+                  </section>
+                {{ end }}
+              </div>
+            {{ end }}
+          </details>
         {{ end }}
       </div>
     </section>
