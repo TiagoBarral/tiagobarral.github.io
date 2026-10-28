@@ -1,0 +1,63 @@
+{{ define "main" }}
+  {{ $guides := sort .Pages ".Params.part" "asc" }}
+  {{ $featured := index $guides 0 }}
+  {{ $rest := after 1 $guides }}
+
+  <section class="ed-section ed-guides-hero">
+    <div class="ed-guides-issue">
+      <span>№ 14</span>
+      <span></span>
+      <span>Practical field notes</span>
+    </div>
+
+    <div class="ed-guides-hero-grid">
+      <div>
+        <h1 class="ed-guides-title">For the <em>next</em> person building in public.</h1>
+        <p class="ed-guides-lead">Notes I wish I had earlier. Opinionated, practical, no fluff — written for future me as much as for you.</p>
+      </div>
+      <div class="kicker">Practical field notes</div>
+    </div>
+  </section>
+
+  {{ with $featured }}
+    <section class="ed-section ed-guides-featured-wrap">
+      <a href="{{ .RelPermalink }}" class="guide-featured">
+        <div>
+          {{ $displayTitle := .Params.series_title | default .Title }}
+          <div class="kicker">Featured guide · Part {{ with .Params.part }}{{ . }}{{ else }}1{{ end }}</div>
+          <h2>{{ $displayTitle }}.</h2>
+          {{ with .Params.summary }}<p>{{ . }}</p>{{ end }}
+          <span class="arrow">Read the guide →</span>
+        </div>
+
+        <div class="guide-chapters" aria-label="Guide chapters">
+          <div class="kicker">Chapters · 22 min read</div>
+          <ol>
+            <li>The smallest possible setup</li>
+            <li>Picking a stack that won't move</li>
+            <li>Writing the first README</li>
+            <li>The 60-minute first commit</li>
+            <li>Shipping anything, even rough</li>
+            <li>What to do when you're stuck</li>
+          </ol>
+        </div>
+      </a>
+    </section>
+  {{ end }}
+
+  {{ with $rest }}
+    <section class="ed-section ed-guides-more">
+      <div class="ed-guide-grid">
+        {{ range . }}
+          <a class="guide-small" href="{{ .RelPermalink }}">
+            {{ $displayTitle := .Params.series_title | default .Title }}
+            <span class="ornament">{{ with .Params.part }}{{ if eq . 2 }}ii{{ else if eq . 3 }}iii{{ else }}§{{ end }}{{ else }}§{{ end }}</span>
+            <div class="part">Guide · Part {{ with .Params.part }}{{ . }}{{ else }}{{ add 1 1 }}{{ end }}</div>
+            <h3>{{ $displayTitle }}</h3>
+            {{ with .Params.summary }}<p>{{ . }}</p>{{ end }}
+          </a>
+        {{ end }}
+      </div>
+    </section>
+  {{ end }}
+{{ end }}

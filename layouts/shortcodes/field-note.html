@@ -1,0 +1,4 @@
+<aside class="field-note">
+  <div class="field-note__label">{{ .Get "label" | default "Field note" }}</div>
+  <div class="field-note__body">{{ .Inner | markdownify }}</div>
+</aside>

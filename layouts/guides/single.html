@@ -1,0 +1,131 @@
+{{ define "main" }}
+  {{/* Sibling chapters within the same series. Falls back to front matter chapters. */}}
+  {{ $series := .Params.series | default .Section }}
+  {{ $chapters := where (where site.RegularPages "Section" .Section) ".Params.series" $series }}
+  {{ $chapters = $chapters.ByParam "part" }}
+  {{ $cur := . }}
+  {{ $curIndex := 0 }}
+  {{ range $i, $c := $chapters }}{{ if eq $c.RelPermalink $cur.RelPermalink }}{{ $curIndex = $i }}{{ end }}{{ end }}
+  {{ $frontMatterChapters := .Params.chapters }}
+  {{ $total := len $chapters }}
+  {{ if and (le $total 1) $frontMatterChapters }}{{ $total = len $frontMatterChapters }}{{ end }}
+  {{ $chapterNumber := .Params.chapter | default (add $curIndex 1) }}
+  {{ if and (le (len $chapters) 1) .Params.chapter }}{{ $curIndex = sub $chapterNumber 1 }}{{ end }}
+  {{ $progress := 0 }}
+  {{ if gt $total 0 }}{{ $progress = mul (div (float (add $curIndex 1)) (float $total)) 100 }}{{ end }}
+
+  <div class="reader-progress" aria-hidden="true">
+    <div class="fill" style="width: {{ $progress }}%;"></div>
+  </div>
+
+  <section class="ed-section" style="padding-bottom:24px;">
+    <div class="reader-crumbs">
+      <a href="{{ "/guides/" | relURL }}">Guides</a>
+      {{ with .Params.series_title }}<span class="sep">/</span><a href="#">{{ . }}</a>{{ end }}
+      <span class="sep">/</span>
+      <span class="cur">Chapter {{ printf "%02d" $chapterNumber }}</span>
+    </div>
+
+    {{ with .Params.series_title }}
+      <div class="kicker" style="color:var(--warm);margin-bottom:18px;">{{ . }} · Chapter {{ printf "%02d" $chapterNumber }} of {{ printf "%02d" $total }}</div>
+    {{ else }}
+      <div class="kicker" style="color:var(--warm);margin-bottom:18px;">{{ with .Params.part }}Part {{ . }}{{ else }}Guide{{ end }}</div>
+    {{ end }}
+
+    <h1 style="font-family:'Fraunces',serif;font-weight:400;font-size:104px;letter-spacing:-0.04em;line-height:0.95;margin:0 0 24px;max-width:1000px;text-wrap:balance;">
+      {{ .Title }}<em style="color:var(--accent);font-style:italic;">.</em>
+    </h1>
+
+    {{ with .Params.summary }}
+      <p style="font-family:'Fraunces',serif;font-size:22px;line-height:1.5;max-width:720px;color:var(--ink);font-style:italic;margin:0;">{{ . }}</p>
+    {{ end }}
+
+    <div class="reader-meta">
+      {{ $words := countwords .Plain }}
+      {{ $mins := math.Round (div (float $words) 200.0) }}
+      <span>Reading <strong>~{{ $mins }} min</strong></span>
+      {{ with .Lastmod }}<span>Updated <strong>{{ .Format "Jan 2, 2006" }}</strong></span>{{ end }}
+      {{ with .Params.series_title }}<span>Part of <strong>{{ . }}</strong></span>{{ end }}
+      <span>Words <strong>{{ $words }}</strong></span>
+    </div>
+  </section>
+
+  <section class="ed-section ed-section--paper" style="padding-top:40px;">
+    <div class="reader-body">
+      <aside class="reader-toc">
+        {{ if gt $total 1 }}
+          <h4>In this guide</h4>
+          <ol>
+            {{ if and (le (len $chapters) 1) $frontMatterChapters }}
+              {{ range $i, $chapter := $frontMatterChapters }}
+                {{ $state := "" }}
+                {{ if lt $i $curIndex }}{{ $state = "done" }}{{ end }}
+                {{ if eq $i $curIndex }}{{ $state = "cur" }}{{ end }}
+                <li class="{{ $state }}"><a href="#">{{ $chapter }}</a></li>
+              {{ end }}
+            {{ else }}
+              {{ range $i, $c := $chapters }}
+                {{ $state := "" }}
+                {{ if lt $i $curIndex }}{{ $state = "done" }}{{ end }}
+                {{ if eq $i $curIndex }}{{ $state = "cur" }}{{ end }}
+                <li class="{{ $state }}"><a href="{{ $c.RelPermalink }}">{{ $c.Title }}</a></li>
+              {{ end }}
+            {{ end }}
+          </ol>
+        {{ end }}
+
+        {{ with .TableOfContents }}
+          <h4 style="margin-top:24px;">On this page</h4>
+          {{ . }}
+        {{ end }}
+      </aside>
+
+      <article class="reader-article ed-prose--dropcap">
+        {{ .Content }}
+      </article>
+    </div>
+  </section>
+
+  {{ if gt (len $chapters) 1 }}
+    {{ $prev := false }}{{ $next := false }}
+    {{ if gt $curIndex 0 }}{{ $prev = index $chapters (sub $curIndex 1) }}{{ end }}
+    {{ if lt (add $curIndex 1) (len $chapters) }}{{ $next = index $chapters (add $curIndex 1) }}{{ end }}
+    <nav class="reader-nav">
+      {{ if $prev }}
+        <a href="{{ $prev.RelPermalink }}">
+          <div class="dir">← Previous</div>
+          <div class="title">Chapter {{ printf "%02d" $curIndex }} — {{ $prev.Title }}</div>
+        </a>
+      {{ else }}
+        <div></div>
+      {{ end }}
+      {{ if $next }}
+        <a href="{{ $next.RelPermalink }}" class="right">
+          <div class="dir">Next →</div>
+          <div class="title">Chapter {{ printf "%02d" (add $curIndex 2) }} — {{ $next.Title }}</div>
+        </a>
+      {{ else }}
+        <div></div>
+      {{ end }}
+    </nav>
+  {{ end }}
+
+  <script>
+    (function () {
+      var bar = document.querySelector('.reader-progress .fill');
+      var article = document.querySelector('.reader-article');
+      if (!bar || !article) return;
+      function update () {
+        var rect = article.getBoundingClientRect();
+        var winH = window.innerHeight;
+        var total = rect.height - winH;
+        var scrolled = Math.min(Math.max(-rect.top, 0), Math.max(total, 1));
+        var pct = total > 0 ? (scrolled / total) * 100 : 100;
+        bar.style.width = pct + '%';
+      }
+      window.addEventListener('scroll', update, { passive: true });
+      window.addEventListener('resize', update);
+      update();
+    })();
+  </script>
+{{ end }}

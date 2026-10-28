@@ -1,0 +1,65 @@
+{{ define "main" }}
+  <section class="ed-section" style="padding-bottom:24px;">
+    <div class="reader-crumbs" style="text-align:center;">
+      <a href="{{ "/blog/" | relURL }}">← Back to the journal</a>
+    </div>
+  </section>
+
+  <section class="post-head">
+    {{ with .Params.tags }}
+      <div class="post-tags">
+        {{ range $i, $t := . }}
+          {{ if $i }}<span class="sep">·</span>{{ end }}
+          <span>{{ $t }}</span>
+        {{ end }}
+      </div>
+    {{ end }}
+
+    <h1>{{ .Title | safeHTML }}</h1>
+
+    {{ with .Params.summary }}
+      <p class="dek">{{ . }}</p>
+    {{ end }}
+
+    <div class="post-byline">
+      <span class="avatar">
+        <img src="{{ "/images/profile-circle.png" | relURL }}" alt="">
+      </span>
+      <span>By <strong>{{ site.Params.author }}</strong></span>
+      <span>·</span>
+      <span><strong>{{ .Date.Format "Jan 2, 2006" }}</strong></span>
+      {{ $words := countwords .Plain }}
+      {{ $mins := math.Round (div (float $words) 200.0) }}
+      <span>·</span>
+      <span><strong>{{ $mins }} min read</strong></span>
+      <span>·</span>
+      <span>{{ $words }} words</span>
+    </div>
+  </section>
+
+  <article class="post-body">
+    {{ .Content }}
+  </article>
+
+  <div class="post-share">
+    <a class="btn" href="#" onclick="navigator.clipboard&&navigator.clipboard.writeText(window.location.href);this.textContent='Copied';setTimeout(()=>this.textContent='Copy link',2000);return false;">Copy link</a>
+    {{ with site.Params.email }}<a class="btn" href="mailto:{{ . }}?subject={{ $.Title }}">Reply via email ↗</a>{{ end }}
+    <a class="btn" href="https://bsky.app/intent/compose?text={{ printf "%s — %s" .Title .Permalink | urlquery }}" target="_blank" rel="noopener">Share on Bluesky</a>
+  </div>
+
+  {{ $related := where (where site.RegularPages "Section" .Section) "Permalink" "!=" .Permalink }}
+  {{ $related = first 3 $related.ByDate.Reverse }}
+  {{ with $related }}
+    <section class="post-related">
+      <h3>— Keep reading</h3>
+      <div class="related-grid">
+        {{ range . }}
+          <a href="{{ .RelPermalink }}">
+            <span class="date">{{ .Date.Format "Jan 2, 2006" }}</span>
+            <h4>{{ .Title | safeHTML }}</h4>
+          </a>
+        {{ end }}
+      </div>
+    </section>
+  {{ end }}
+{{ end }}

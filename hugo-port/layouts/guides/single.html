@@ -1,0 +1,54 @@
+{{ define "main" }}
+  <section class="ed-section" style="padding-bottom:24px;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:24px;">
+      <a href="{{ "/guides/" | relURL }}" style="color:inherit;text-decoration:none;">← Guides</a>
+      <span style="margin:0 12px;">/</span>
+      <span>{{ .Title }}</span>
+    </div>
+
+    <header style="max-width:760px;">
+      {{ with .Params.part }}<div class="kicker" style="color:var(--accent);margin-bottom:18px;">Part {{ . }}</div>{{ end }}
+      <h1 style="font-family:'Fraunces',serif;font-weight:400;font-size:88px;letter-spacing:-0.04em;line-height:0.95;margin:0 0 24px;">{{ .Title }}<em style="color:var(--accent);font-style:italic;">.</em></h1>
+      {{ with .Params.summary }}
+        <p style="font-size:22px;line-height:1.5;color:var(--muted);max-width:680px;margin:0;font-family:'Fraunces',serif;font-style:italic;">{{ . }}</p>
+      {{ end }}
+    </header>
+  </section>
+
+  <section class="ed-section ed-section--paper" style="padding-top:40px;">
+    <div class="ed-project-body">
+      <aside class="ed-project-toc">
+        {{ with .Params.checklist }}
+          <div class="kicker">— Checklist</div>
+          <ul class="ed-checklist">
+            {{ range . }}<li>{{ . }}</li>{{ end }}
+          </ul>
+        {{ end }}
+        {{ with .TableOfContents }}
+          <div class="kicker" style="margin-top:24px;">— Contents</div>
+          {{ . }}
+        {{ end }}
+      </aside>
+      <article class="ed-prose ed-prose--dropcap">{{ .Content }}</article>
+    </div>
+  </section>
+
+  {{ if or .PrevInSection .NextInSection }}
+    <section class="ed-section">
+      <div class="ed-prevnext">
+        {{ with .PrevInSection }}
+          <a href="{{ .RelPermalink }}" class="ed-pn-card">
+            <span class="kicker">← Previous chapter</span>
+            <strong>{{ .Title }}</strong>
+          </a>
+        {{ else }}<div></div>{{ end }}
+        {{ with .NextInSection }}
+          <a href="{{ .RelPermalink }}" class="ed-pn-card ed-pn-card--right">
+            <span class="kicker">Next chapter →</span>
+            <strong>{{ .Title }}</strong>
+          </a>
+        {{ else }}<div></div>{{ end }}
+      </div>
+    </section>
+  {{ end }}
+{{ end }}

@@ -1,112 +1,96 @@
 {{ define "main" }}
-  <header class="projects-index-hero">
-    <p class="eyebrow">Index</p>
-    <h1>{{ .Title }}</h1>
-    {{ with .Content }}
-      <div class="projects-index-description">{{ . }}</div>
-    {{ end }}
+  {{ $projects := where site.RegularPages "Section" "projects" }}
+  {{ $featured := where $projects ".Params.featured" true }}
+  {{ $rest := where $projects ".Params.featured" "!=" true }}
 
-    <div class="project-value-grid" aria-label="Project principles">
-      <div class="project-value-card">
-        <span class="project-value-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" focusable="false">
-            <path d="m8 7-5 5 5 5" />
-            <path d="m16 7 5 5-5 5" />
-            <path d="m14 4-4 16" />
-          </svg>
-        </span>
-        <div>
-          <h2>Real projects</h2>
-          <p>Shipped and in progress</p>
-        </div>
+  {{/* ===== Section header ===== */}}
+  <section class="ed-section">
+    <div class="section-head">
+      <div>
+        <div class="kicker">— The catalogue</div>
+        <h1 class="section-heading" style="font-size:96px;">All <em>projects</em>.</h1>
       </div>
-      <div class="project-value-card">
-        <span class="project-value-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" focusable="false">
-            <rect x="4" y="3" width="16" height="18" rx="2" />
-            <path d="M8 3v18" />
-            <path d="M8 7h8" />
-          </svg>
-        </span>
-        <div>
-          <h2>Honest reflections</h2>
-          <p>What worked, what didn't</p>
-        </div>
-      </div>
-      <div class="project-value-card">
-        <span class="project-value-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" focusable="false">
-            <path d="M4 19V5" />
-            <path d="M4 19h16" />
-            <path d="m7 15 4-4 3 3 5-7" />
-          </svg>
-        </span>
-        <div>
-          <h2>Continuous learning</h2>
-          <p>One note at a time</p>
-        </div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);text-align:right;">
+        {{ len $projects }} entries<br>
+        Updated {{ now.Format "Jan 2, 2006" }}
       </div>
     </div>
-  </header>
 
-  {{ $projects := .Pages.ByDate.Reverse }}
-  <section class="project-showcase" aria-label="Projects">
-    {{ range $projects }}
-      <a class="project-feature-card" href="{{ .RelPermalink }}" aria-label="Open {{ .Title }}">
-        <div class="project-feature-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" focusable="false">
-            <path d="M4.5 16.5c-1.5 1.3-2 5-2 5s3.7-.5 5-2c.7-.8.7-2.1-.1-2.9-.8-.8-2.1-.8-2.9-.1Z" />
-            <path d="m12 15-3-3a22 22 0 0 1 2-4A12.9 12.9 0 0 1 22 2c0 2.7-.8 7.5-6 11a22 22 0 0 1-4 2Z" />
-            <path d="M9 12H4s.6-3 2-4c1.6-1.1 5 0 5 0" />
-            <path d="M12 15v5s3-.6 4-2c1.1-1.6 0-5 0-5" />
-            <path d="M15 9h.01" />
-          </svg>
-        </div>
-        <div class="project-feature-content">
-          <h2>{{ .Title }}</h2>
-          <p class="project-feature-meta">
-            {{ with .Params.status }}<span>{{ . }}</span>{{ end }}
-            {{ with .Params.stack }}<span>{{ index . 0 }}</span>{{ end }}
-            {{ with .Date }}<span>{{ .Format "January 2, 2006" }}</span>{{ end }}
-          </p>
-          {{ with .Params.summary }}
-            <p class="project-feature-summary">{{ . }}</p>
-          {{ end }}
-          {{ with .Params.stack }}
-            <ul class="project-tech-list" aria-label="Technology stack">
-              {{ range first 6 . }}
-                <li>{{ . }}</li>
-              {{ end }}
-            </ul>
-          {{ end }}
-        </div>
-        <span class="project-feature-arrow" aria-hidden="true">
-          <svg viewBox="0 0 24 24" focusable="false">
-            <path d="M5 12h14" />
-            <path d="m13 6 6 6-6 6" />
-          </svg>
-        </span>
-      </a>
-    {{ else }}
-      <p>No projects yet.</p>
-    {{ end }}
+    {{ with .Content }}<div class="ed-hero-lead" style="max-width:720px;margin-bottom:32px;">{{ . }}</div>{{ end }}
+
+    {{/* ===== Filter bar ===== */}}
+    <div class="ed-filter-bar">
+      <button class="ed-filter is-active" data-filter="all">All</button>
+      <button class="ed-filter" data-filter="building">In progress</button>
+      <button class="ed-filter" data-filter="shipped">Shipped</button>
+      <button class="ed-filter" data-filter="paused">Paused</button>
+      <button class="ed-filter" data-filter="archive">Archive</button>
+    </div>
   </section>
 
-  <div class="project-count">
-    <span>{{ len $projects }} {{ if eq (len $projects) 1 }}project{{ else }}projects{{ end }}</span>
-  </div>
+  {{/* ===== Featured project ===== */}}
+  {{ with index $featured 0 }}
+    <section class="ed-section" style="padding-top:0;">
+      <div class="kicker" style="margin-bottom:16px;">— Featured</div>
+      <a class="project-card featured" href="{{ .RelPermalink }}" data-status="{{ .Params.status | lower | default "building" }}">
+        <span class="num">01</span>
+        <div class="top">
+          {{ with .Params.status }}<span class="pill warm" style="background:rgba(194,96,43,0.25);color:#f8c89c">● {{ . }}</span>{{ end }}
+          {{ with .Date }}<span>Updated {{ .Format "2 Jan 2006" }}</span>{{ end }}
+        </div>
+        <h3>{{ .Title }}<em>.</em></h3>
+        {{ with .Params.summary }}<p class="desc">{{ . }}</p>{{ end }}
+        {{ with .Params.stack }}
+          <div class="stack">{{ range first 6 . }}<span>{{ . }}</span>{{ end }}</div>
+        {{ end }}
+        <span class="arrow">Read the project →</span>
+      </a>
+    </section>
+  {{ end }}
 
-  <aside class="more-projects-note">
-    <span class="project-value-icon" aria-hidden="true">
-      <svg viewBox="0 0 24 24" focusable="false">
-        <path d="M9 18h6" />
-        <path d="M10 22h4" />
-        <path d="M8 14c-1-1.1-1.5-2.3-1.5-3.8C6.5 7 9 4.5 12 4.5s5.5 2.5 5.5 5.7c0 1.5-.5 2.7-1.5 3.8-.9.9-1.5 2-1.5 3.2h-5c0-1.2-.6-2.3-1.5-3.2Z" />
-      </svg>
-    </span>
-    <div>
-      <h2>More coming soon</h2>
-      <p>I'm working on several things. New projects and notes will appear here as they ship.</p>
+  {{/* ===== Catalogue grid ===== */}}
+  <section class="ed-section ed-section--paper">
+    <div class="kicker" style="margin-bottom:16px;">— Catalogue</div>
+    <div class="ed-catalogue">
+      {{ range $i, $p := $rest }}
+        <a class="catalogue-row" href="{{ .RelPermalink }}" data-status="{{ .Params.status | lower | default "building" }}">
+          <span class="num">{{ printf "%02d" (add $i 2) }}</span>
+          <div class="body">
+            <div class="top-row">
+              <h3>{{ .Title }}</h3>
+              {{ with .Params.status }}<span class="pill">● {{ . }}</span>{{ end }}
+            </div>
+            {{ with .Params.summary }}<p>{{ . }}</p>{{ end }}
+            {{ with .Params.stack }}
+              <div class="stack-line">{{ delimit (first 5 .) " · " }}</div>
+            {{ end }}
+          </div>
+          <span class="arr">→</span>
+        </a>
+      {{ end }}
     </div>
-  </aside>
+  </section>
+
+  <script>
+    (function () {
+      var btns = document.querySelectorAll('.ed-filter');
+      var cards = document.querySelectorAll('[data-status]');
+      btns.forEach(function (b) {
+        b.addEventListener('click', function () {
+          btns.forEach(function (x) { x.classList.remove('is-active'); });
+          b.classList.add('is-active');
+          var f = b.dataset.filter;
+          cards.forEach(function (c) {
+            var s = (c.dataset.status || '').toLowerCase();
+            var show = f === 'all'
+              || (f === 'building' && /progress|building|wip|mvp|active|alpha|beta/.test(s))
+              || (f === 'shipped' && /shipped|live|released|done/.test(s))
+              || (f === 'paused' && /paused|hold|hiatus/.test(s))
+              || (f === 'archive' && /archive|deprecated|sunset/.test(s));
+            c.style.display = show ? '' : 'none';
+          });
+        });
+      });
+    })();
+  </script>
 {{ end }}

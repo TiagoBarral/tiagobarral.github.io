@@ -1,12 +1,58 @@
 {{ define "main" }}
-  <section class="about-page">
-    <div class="about-copy">
-      <p class="eyebrow">About</p>
-      <h1>{{ .Title }}</h1>
-      <div class="about-content">
-        {{ .Content }}
-      </div>
-    </div>
+  <section class="ed-section ed-about-page">
+    <div class="ed-about-layout">
+      <article class="ed-about-main">
+        <div class="ed-about-issue">
+          <span>№ 14</span>
+          <span></span>
+        </div>
 
+        <h1 class="ed-about-title">Hi—I'm <em>Tiago.</em></h1>
+
+        <div class="ed-about-intro">
+          <p>I'm a developer in Lisbon, learning out loud. I build production-minded side projects, I document the messy middle, and I write the notes I wish I had earlier.</p>
+          <p>This site is part portfolio, part working journal. I use it to think — to put scrappy systems in front of real constraints and figure out what they want to become.</p>
+        </div>
+
+        <section class="ed-about-block">
+          <h2>What I'm <em>interested</em> in.</h2>
+          <ul>
+            <li>Agentic AI in real, narrow workflows — not chat for the sake of chat</li>
+            <li>Backend systems that admit they might fail (queues, retries, idempotency)</li>
+            <li>The boring decisions that decide whether software actually ships</li>
+            <li>Writing as a tool for thinking, not for the timeline</li>
+          </ul>
+        </section>
+
+        <section class="ed-about-block">
+          <h2>How I <em>work</em>.</h2>
+          <p>Slowly. Honestly. With a strong preference for boring tools and small, observable steps. I'd rather ship a rough thing twice than a polished thing once.</p>
+        </section>
+      </article>
+
+      <aside class="ed-about-rail" aria-label="About Tiago Barral">
+        <div class="ed-about-portrait">
+          <img src="{{ "/images/profile-circle.png" | relURL }}" alt="Portrait of {{ site.Params.author }}">
+        </div>
+
+        <div class="ed-about-caption">
+          <div class="kicker">— Tiago Barral</div>
+          <p>Building <em>quietly,</em><br>in public.</p>
+        </div>
+
+        <div class="ed-about-meta">
+          <div class="meta-row"><span class="k">Based</span><span>Lisbon, Portugal</span></div>
+          <div class="meta-row"><span class="k">Stack</span><span>Next.js · Postgres · Claude</span></div>
+          <div class="meta-row"><span class="k">Reading</span><span>A Philosophy of Software Design</span></div>
+        </div>
+
+        <nav class="ed-about-links" aria-label="Elsewhere">
+          {{ with site.Params.github }}<a href="{{ . }}">GitHub <span>↗</span></a>{{ end }}
+          <a href="{{ "/index.xml" | relURL }}">RSS <span>↗</span></a>
+          {{ with site.Params.email }}<a href="mailto:{{ . }}">Email <span>↗</span></a>{{ end }}
+          <a href="{{ "/now/" | relURL }}">/now <span>→</span></a>
+        </nav>
+      </aside>
+    </div>
   </section>
 {{ end }}

@@ -1,13 +1,9 @@
 <footer class="site-footer">
   <div class="site-footer__inner">
-    <p class="site-footer__copy">&copy; 2026 {{ site.Params.author }}</p>
-    <p class="site-footer__note">
-      Have a comment, question, or suggestion?
-      {{ with site.Params.github }}
-        <a href="{{ . }}" rel="me noopener" target="_blank">Reach me through GitHub</a>.
-      {{ else }}
-        Reach me through GitHub.
-      {{ end }}
-    </p>
+    <span class="site-footer__copy">© {{ now.Format "2006" }} {{ site.Params.author }} · A learning journal in public.</span>
+    <span class="site-footer__meta">
+      — Set in Fraunces &amp; Inter · Built with Hugo · Lisbon
+      {{ with site.Params.github }} · <a href="{{ . }}" rel="me noopener" target="_blank">GitHub ↗</a>{{ end }}
+    </span>
   </div>
 </footer>
