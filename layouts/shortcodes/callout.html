@@ -1,0 +1,4 @@
+<aside class="reader-callout">
+  <div class="label">{{ .Get "label" | default "Field note" }}</div>
+  {{ .Inner | markdownify }}
+</aside>

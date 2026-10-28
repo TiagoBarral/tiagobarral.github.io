@@ -39,3 +39,7 @@ hugo server -D
 ```bash
 hugo --gc
 ```
+
+## Continuing The Editorial Redesign
+
+The current redesign context, decisions, and new-computer setup are documented in [`HANDOFF.md`](HANDOFF.md). Repository-specific agent rules live in [`AGENTS.md`](AGENTS.md).

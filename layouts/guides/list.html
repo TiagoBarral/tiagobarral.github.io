@@ -1,51 +1,63 @@
 {{ define "main" }}
-  {{ $guides := .Pages }}
-  {{ $featured := where $guides ".Params.featured" true }}
-  {{ $rest := where $guides ".Params.featured" "!=" true }}
+  {{ $guides := sort .Pages ".Params.part" "asc" }}
+  {{ $featured := index $guides 0 }}
+  {{ $rest := after 1 $guides }}
 
-  <section class="ed-section">
-    <div class="section-head">
-      <div>
-        <div class="kicker">— Field notes</div>
-        <h1 class="section-heading" style="font-size:96px;">Practical <em>guides</em>.</h1>
-      </div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);text-align:right;">{{ len $guides }} guides</div>
+  <section class="ed-section ed-guides-hero">
+    <div class="ed-guides-issue">
+      <span>№ 14</span>
+      <span></span>
+      <span>Practical field notes</span>
     </div>
-    {{ with .Content }}<div class="ed-hero-lead" style="max-width:720px;margin-bottom:32px;">{{ . }}</div>{{ end }}
+
+    <div class="ed-guides-hero-grid">
+      <div>
+        <h1 class="ed-guides-title">For the <em>next</em> person building in public.</h1>
+        <p class="ed-guides-lead">Notes I wish I had earlier. Opinionated, practical, no fluff — written for future me as much as for you.</p>
+      </div>
+      <div class="kicker">Practical field notes</div>
+    </div>
   </section>
 
-  {{ with index $featured 0 }}
-    <section class="ed-section" style="padding-top:0;">
-      <div class="kicker" style="margin-bottom:16px;">— Featured</div>
+  {{ with $featured }}
+    <section class="ed-section ed-guides-featured-wrap">
       <a href="{{ .RelPermalink }}" class="guide-featured">
         <div>
-          <div class="kicker" style="color:var(--warm);margin-bottom:18px;">{{ with .Params.parts }}{{ len . }} parts{{ else }}Multi-part guide{{ end }}</div>
-          <h2>{{ .Title }}<em>.</em></h2>
+          {{ $displayTitle := .Params.series_title | default .Title }}
+          <div class="kicker">Featured guide · Part {{ with .Params.part }}{{ . }}{{ else }}1{{ end }}</div>
+          <h2>{{ $displayTitle }}.</h2>
           {{ with .Params.summary }}<p>{{ . }}</p>{{ end }}
-          <span class="arrow">Start reading →</span>
+          <span class="arrow">Read the guide →</span>
         </div>
-        {{ with .Params.parts }}
-        <ol class="guide-parts">
-          {{ range $i, $p := . }}
-            <li><span class="n">{{ printf "%02d" (add $i 1) }}</span><span>{{ $p }}</span></li>
-          {{ end }}
-        </ol>
-        {{ end }}
+
+        <div class="guide-chapters" aria-label="Guide chapters">
+          <div class="kicker">Chapters · 22 min read</div>
+          <ol>
+            <li>The smallest possible setup</li>
+            <li>Picking a stack that won't move</li>
+            <li>Writing the first README</li>
+            <li>The 60-minute first commit</li>
+            <li>Shipping anything, even rough</li>
+            <li>What to do when you're stuck</li>
+          </ol>
+        </div>
       </a>
     </section>
   {{ end }}
 
-  <section class="ed-section ed-section--paper">
-    <div class="kicker" style="margin-bottom:16px;">— More guides</div>
-    <div class="ed-guide-grid">
-      {{ range $rest }}
-        <a class="guide-small" href="{{ .RelPermalink }}">
-          <span class="ornament">§</span>
-          <div class="part">{{ with .Params.part }}Part {{ . }}{{ else }}Guide{{ end }}</div>
-          <h3>{{ .Title }}</h3>
-          {{ with .Params.summary }}<p>{{ truncate 130 . }}</p>{{ end }}
-        </a>
-      {{ end }}
-    </div>
-  </section>
+  {{ with $rest }}
+    <section class="ed-section ed-guides-more">
+      <div class="ed-guide-grid">
+        {{ range . }}
+          <a class="guide-small" href="{{ .RelPermalink }}">
+            {{ $displayTitle := .Params.series_title | default .Title }}
+            <span class="ornament">{{ with .Params.part }}{{ if eq . 2 }}ii{{ else if eq . 3 }}iii{{ else }}§{{ end }}{{ else }}§{{ end }}</span>
+            <div class="part">Guide · Part {{ with .Params.part }}{{ . }}{{ else }}{{ add 1 1 }}{{ end }}</div>
+            <h3>{{ $displayTitle }}</h3>
+            {{ with .Params.summary }}<p>{{ . }}</p>{{ end }}
+          </a>
+        {{ end }}
+      </div>
+    </section>
+  {{ end }}
 {{ end }}

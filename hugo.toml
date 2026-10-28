@@ -38,3 +38,7 @@ title = "Tiago Barral"
     name = "About"
     pageRef = "/about"
     weight = 40
+  [[menus.main]]
+    name = "Now"
+    pageRef = "/now"
+    weight = 50

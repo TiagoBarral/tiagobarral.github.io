@@ -1,0 +1,45 @@
+{{ define "main" }}
+  <section class="ed-section" style="padding-bottom:24px;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:24px;">
+      <a href="{{ "/blog/" | relURL }}" style="color:inherit;text-decoration:none;">← Journal</a>
+      <span style="margin:0 12px;">/</span>
+      <span>{{ .Date.Format "Jan 2, 2006" }}</span>
+    </div>
+
+    <article style="max-width:780px;margin:0 auto;">
+      <header style="text-align:center;margin-bottom:48px;">
+        {{ with .Params.tags }}<div class="kicker" style="color:var(--accent);margin-bottom:18px;">— {{ delimit . " · " }}</div>{{ end }}
+        <h1 style="font-family:'Fraunces',serif;font-weight:400;font-size:80px;letter-spacing:-0.035em;line-height:0.98;margin:0 0 24px;">{{ .Title }}</h1>
+        {{ with .Params.summary }}
+          <p style="font-size:22px;line-height:1.5;color:var(--muted);max-width:640px;margin:0 auto;font-family:'Fraunces',serif;font-style:italic;">{{ . }}</p>
+        {{ end }}
+        <div style="margin-top:32px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);display:flex;gap:16px;justify-content:center;">
+          <span>{{ .Date.Format "January 2, 2006" }}</span>
+          <span>·</span>
+          <span>{{ math.Round (div (countwords .Plain) 200.0) }} min read</span>
+        </div>
+      </header>
+
+      <div class="ed-prose ed-prose--dropcap">{{ .Content }}</div>
+    </article>
+  </section>
+
+  {{ if or .PrevInSection .NextInSection }}
+    <section class="ed-section ed-section--paper" style="padding-top:32px;">
+      <div class="ed-prevnext">
+        {{ with .PrevInSection }}
+          <a href="{{ .RelPermalink }}" class="ed-pn-card">
+            <span class="kicker">← Previous</span>
+            <strong>{{ .Title }}</strong>
+          </a>
+        {{ else }}<div></div>{{ end }}
+        {{ with .NextInSection }}
+          <a href="{{ .RelPermalink }}" class="ed-pn-card ed-pn-card--right">
+            <span class="kicker">Next →</span>
+            <strong>{{ .Title }}</strong>
+          </a>
+        {{ else }}<div></div>{{ end }}
+      </div>
+    </section>
+  {{ end }}
+{{ end }}

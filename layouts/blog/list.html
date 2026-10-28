@@ -20,7 +20,7 @@
         <a class="journal-long-row" href="{{ .RelPermalink }}">
           <span class="date">{{ .Date.Format "Jan 2, 2006" }}</span>
           <div class="body">
-            <h3>{{ .Title }}</h3>
+            <h3>{{ .Title | safeHTML }}</h3>
             {{ with .Params.summary }}<p>{{ . }}</p>{{ else }}<p>{{ .Summary | plainify | truncate 160 }}</p>{{ end }}
             <div class="row-meta">
               <span>{{ math.Round (div (countwords .Plain) 200.0) }} min read</span>

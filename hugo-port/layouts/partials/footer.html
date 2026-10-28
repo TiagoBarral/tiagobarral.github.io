@@ -1,0 +1,9 @@
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <span class="site-footer__copy">© {{ now.Format "2006" }} {{ site.Params.author }} · A learning journal in public.</span>
+    <span class="site-footer__meta">
+      — Set in Fraunces &amp; Inter · Built with Hugo · Lisbon
+      {{ with site.Params.github }} · <a href="{{ . }}" rel="me noopener" target="_blank">GitHub ↗</a>{{ end }}
+    </span>
+  </div>
+</footer>

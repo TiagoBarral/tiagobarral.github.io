@@ -163,7 +163,7 @@
         {{ range first 3 . }}
           <a class="card elevated" href="{{ .RelPermalink }}" style="text-decoration:none; color:var(--ink); display:flex; flex-direction:column; gap:10px;">
             <time class="kicker" style="margin:0">{{ .Date.Format "Jan 2, 2006" }}</time>
-            <h3 style="font-family:'Fraunces',serif; font-size:24px; letter-spacing:-0.01em; line-height:1.1;">{{ .Title }}</h3>
+            <h3 style="font-family:'Fraunces',serif; font-size:24px; letter-spacing:-0.01em; line-height:1.1;">{{ .Title | safeHTML }}</h3>
             {{ with .Params.summary }}<p style="font-size:14px; color:var(--muted); line-height:1.55; margin:0;">{{ truncate 140 . }}</p>{{ end }}
             <span style="margin-top:auto; color:var(--accent); font-family:'JetBrains Mono',monospace; font-size:12px;">Read post →</span>
           </a>

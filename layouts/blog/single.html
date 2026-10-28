@@ -1,44 +1,64 @@
 {{ define "main" }}
   <section class="ed-section" style="padding-bottom:24px;">
-    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:24px;">
-      <a href="{{ "/blog/" | relURL }}" style="color:inherit;text-decoration:none;">← Journal</a>
-      <span style="margin:0 12px;">/</span>
-      <span>{{ .Date.Format "Jan 2, 2006" }}</span>
+    <div class="reader-crumbs" style="text-align:center;">
+      <a href="{{ "/blog/" | relURL }}">← Back to the journal</a>
     </div>
-
-    <article style="max-width:780px;margin:0 auto;">
-      <header style="text-align:center;margin-bottom:48px;">
-        {{ with .Params.tags }}<div class="kicker" style="color:var(--accent);margin-bottom:18px;">— {{ delimit . " · " }}</div>{{ end }}
-        <h1 style="font-family:'Fraunces',serif;font-weight:400;font-size:80px;letter-spacing:-0.035em;line-height:0.98;margin:0 0 24px;">{{ .Title }}</h1>
-        {{ with .Params.summary }}
-          <p style="font-size:22px;line-height:1.5;color:var(--muted);max-width:640px;margin:0 auto;font-family:'Fraunces',serif;font-style:italic;">{{ . }}</p>
-        {{ end }}
-        <div style="margin-top:32px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);display:flex;gap:16px;justify-content:center;">
-          <span>{{ .Date.Format "January 2, 2006" }}</span>
-          <span>·</span>
-          <span>{{ math.Round (div (countwords .Plain) 200.0) }} min read</span>
-        </div>
-      </header>
-
-      <div class="ed-prose ed-prose--dropcap">{{ .Content }}</div>
-    </article>
   </section>
 
-  {{ if or .PrevInSection .NextInSection }}
-    <section class="ed-section ed-section--paper" style="padding-top:32px;">
-      <div class="ed-prevnext">
-        {{ with .PrevInSection }}
-          <a href="{{ .RelPermalink }}" class="ed-pn-card">
-            <span class="kicker">← Previous</span>
-            <strong>{{ .Title }}</strong>
+  <section class="post-head">
+    {{ with .Params.tags }}
+      <div class="post-tags">
+        {{ range $i, $t := . }}
+          {{ if $i }}<span class="sep">·</span>{{ end }}
+          <span>{{ $t }}</span>
+        {{ end }}
+      </div>
+    {{ end }}
+
+    <h1>{{ .Title | safeHTML }}</h1>
+
+    {{ with .Params.summary }}
+      <p class="dek">{{ . }}</p>
+    {{ end }}
+
+    <div class="post-byline">
+      <span class="avatar">
+        <img src="{{ "/images/profile-circle.png" | relURL }}" alt="">
+      </span>
+      <span>By <strong>{{ site.Params.author }}</strong></span>
+      <span>·</span>
+      <span><strong>{{ .Date.Format "Jan 2, 2006" }}</strong></span>
+      {{ $words := countwords .Plain }}
+      {{ $mins := math.Round (div (float $words) 200.0) }}
+      <span>·</span>
+      <span><strong>{{ $mins }} min read</strong></span>
+      <span>·</span>
+      <span>{{ $words }} words</span>
+    </div>
+  </section>
+
+  <article class="post-body">
+    {{ .Content }}
+  </article>
+
+  <div class="post-share">
+    <a class="btn" href="#" onclick="navigator.clipboard&&navigator.clipboard.writeText(window.location.href);this.textContent='Copied';setTimeout(()=>this.textContent='Copy link',2000);return false;">Copy link</a>
+    {{ with site.Params.email }}<a class="btn" href="mailto:{{ . }}?subject={{ $.Title }}">Reply via email ↗</a>{{ end }}
+    <a class="btn" href="https://bsky.app/intent/compose?text={{ printf "%s — %s" .Title .Permalink | urlquery }}" target="_blank" rel="noopener">Share on Bluesky</a>
+  </div>
+
+  {{ $related := where (where site.RegularPages "Section" .Section) "Permalink" "!=" .Permalink }}
+  {{ $related = first 3 $related.ByDate.Reverse }}
+  {{ with $related }}
+    <section class="post-related">
+      <h3>— Keep reading</h3>
+      <div class="related-grid">
+        {{ range . }}
+          <a href="{{ .RelPermalink }}">
+            <span class="date">{{ .Date.Format "Jan 2, 2006" }}</span>
+            <h4>{{ .Title | safeHTML }}</h4>
           </a>
-        {{ else }}<div></div>{{ end }}
-        {{ with .NextInSection }}
-          <a href="{{ .RelPermalink }}" class="ed-pn-card ed-pn-card--right">
-            <span class="kicker">Next →</span>
-            <strong>{{ .Title }}</strong>
-          </a>
-        {{ else }}<div></div>{{ end }}
+        {{ end }}
       </div>
     </section>
   {{ end }}

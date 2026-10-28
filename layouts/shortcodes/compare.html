@@ -1,0 +1,13 @@
+{{ $parts := split .Inner "---" }}
+<div class="post-fullbleed">
+  <div class="post-fullbleed-inner">
+    <div>
+      {{ with .Get "label" }}<div class="kicker">{{ . }}</div>{{ end }}
+      {{ with .Get "title" }}<h3>{{ . | safeHTML }}</h3>{{ end }}
+      {{ with .Get "body" }}<p>{{ . }}</p>{{ end }}
+    </div>
+    <pre class="post-fullbleed-code">{{ trim (index $parts 0) " \n\r\t" }}{{ if gt (len $parts) 1 }}
+
+{{ trim (index $parts 1) " \n\r\t" }}{{ end }}</pre>
+  </div>
+</div>
